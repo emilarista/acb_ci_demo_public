@@ -1,0 +1,24 @@
+name: 'Linter for each push to non-main branch'
+
+on:
+  push:
+    branches:
+      # - '*'
+      # - '!main'
+      - 'no_branches'
+    paths:
+      - 'group_vars/*'
+
+jobs:
+  yamllint:
+    name: 'Yamllint'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: 'Yamllint'
+        uses: karancode/yamllint-github-action@v2.1.1
+        with:
+          yamllint_file_or_dir: 'group_vars/*'
+          yamllint_strict: false
+          yamllint_config_filepath: 'files/yamllint_config.yml'

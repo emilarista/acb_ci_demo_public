@@ -1,0 +1,13 @@
+- name: Build ANTA inventory
+  hosts: COMMON_SETTINGS
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: generate anta inventory
+      ansible.builtin.template:
+        src: ../templates/anta_inv.j2
+        dest: "../anta/anta_{{ anta_name }}_inventory.yml"
+        mode: 0664
+      delegate_to: localhost
+      run_once: true

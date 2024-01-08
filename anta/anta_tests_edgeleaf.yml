@@ -1,0 +1,78 @@
+---
+anta.tests.configuration:
+  - VerifyZeroTouch:
+  - VerifyRunningConfigDiffs:
+
+# anta.tests.connectivity:
+#   - VerifyReachability:
+#       template_params:
+#         # DC1
+#         - src: Loopback0
+#           dst: 100.64.2.1 # dc1-spine1
+#         - src: Loopback0
+#           dst: 100.64.2.2 # dc1-spine2
+#         - src: Loopback0
+#           dst: 100.64.2.3 # dc1-spine3
+#         # DC2
+#         - src: Loopback0
+#           dst: 100.66.2.1 # dc2-spine1
+#         - src: Loopback0
+#           dst: 100.66.2.2 # dc2-spine2
+#         - src: Loopback0
+#           dst: 100.66.2.3 # dc2-spine3
+#         # RRs
+#         - src: Loopback0
+#           dst: 100.65.4.1 # s1-p2 RR
+#         - src: Loopback0
+#           dst: 100.65.4.2 # s2-p2 RR
+
+anta.tests.interfaces:
+  - VerifyInterfaceUtilization:
+  # - VerifyInterfaceErrors:
+  - VerifyInterfaceDiscards:
+  - VerifyInterfaceErrDisabled:
+  - VerifyInterfacesStatus: # 3 spine links + 2 mpls uplinks all should be up
+      minimum: 5
+  - VerifyIllegalLACP:
+  - VerifyLoopbackCount: # lo0, lo1
+      number: 2
+  - VerifySVI:
+  # - VerifyL3MTU:
+  #     mtu: 1500
+
+anta.tests.software:
+  - VerifyEOSVersion:
+      versions:
+        - 4.29.2F
+
+  - VerifyTerminAttrVersion:
+      versions:
+        - v1.25.0
+  - VerifyEOSExtensions:
+
+anta.tests.stp:
+  - VerifySTPMode:
+      mode: mstp
+      template_params:
+        - vlan: 10
+        - vlan: 20
+        - vlan: 30
+  - VerifySTPBlockedPorts:
+  - VerifySTPCounters:
+
+anta.tests.vxlan:
+ - VerifyVxlan1Interface:
+ - VerifyVxlanConfigSanity:
+
+anta.tests.routing:
+  generic:
+    - VerifyRoutingProtocolModel:
+        model: multi-agent
+    - VerifyRoutingTableSize:
+        minimum: 2
+        maximum: 200
+    - VerifyBFD:
+  bgp:
+    - VerifyBGPEVPNState:
+    - VerifyBGPEVPNCount:
+        number: 3

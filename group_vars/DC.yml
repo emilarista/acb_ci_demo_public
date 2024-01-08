@@ -1,0 +1,34 @@
+---
+fabric_name: DC
+underlay_routing_protocol: isis
+overlay_routing_protocol: ebgp
+
+isis_default_is_type: level-2
+isis_default_circuit_type: level-2
+isis_default_metric: 50
+isis_advertise_passive_only: true
+
+p2p_uplinks_mtu: 1500
+
+overlay_rd_type:
+  admin_subfield: overlay_loopback
+overlay_rt_type:
+  admin_subfield: "65000"
+
+evpn_ebgp_multihop: 10
+
+# custom_structured_configuration_router_bgp:
+#   address_family_evpn:
+#     peer_groups:
+#       - name: EVPN-OVERLAY-PEERS
+#         additional_paths:
+#           receive: true
+#           send:
+#             any: true
+
+custom_structured_configuration_management_interfaces:
+  - name: Management1
+    lldp:
+      transmit: true
+      receive: false
+      ztp_vlan: 667

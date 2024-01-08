@@ -1,0 +1,44 @@
+---
+c2_tenants:
+  CUSTOMER2:
+    mac_vrf_id_base: 20000
+    mac_vrf_vni_base: 20000
+    enable_mlag_ibgp_peering_vrfs: false
+    vrfs:
+      # VRF definitions inside the tenant.
+      C2_VRF1:
+        # VRF ID definition.
+        vrf_id: 20
+        address_families:
+          - vpn-ipv4
+          - evpn
+        ospf:
+          enabled: true
+          nodes:
+            - branch2-pe1
+        l3_interfaces:
+          # L3 interfaces
+          - interfaces: [Ethernet2]
+            nodes: [branch2-pe1]
+            description: C2-BRANCH2-CPE1
+            enabled: true
+            ip_addresses: [172.17.0.1/31]
+            ospf:
+              enabled: true
+        svis:
+          20:
+            name: C2_20
+            enabled: true
+            ip_address_virtual: 10.2.20.1/24
+            tags:
+              - dc
+        ### ipvpn-gateway export/imports
+        additional_route_targets:
+          - type: export
+            address_family: vpn-ipv4
+            route_target: "65001:20"
+            nodes: [dc1-el1, dc1-el2, dc1-el3, dc2-el1, dc2-el2, dc2-el3]
+          - type: import
+            address_family: vpn-ipv4
+            route_target: "65001:20"
+            nodes: [dc1-el1, dc1-el2, dc1-el3, dc2-el1, dc2-el2, dc2-el3]

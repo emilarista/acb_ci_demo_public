@@ -1,0 +1,51 @@
+---
+port_profiles:
+  - profile: PHONES
+    mode: "trunk phone"
+    phone_vlan: 140
+    native_vlan: 10
+    phone_trunk_mode: untagged phone
+
+servers:
+  - name: dc1-server1
+    adapters:
+      - endpoint_ports: [Ethernet1, Ethernet2]
+        switch_ports: [Ethernet6, Ethernet7]
+        switches: [dc1-l1a, dc1-l1b]
+        vlans: 10,20,30
+        native_vlan: 4092
+        mode: trunk
+        port_channel:
+          mode: active
+          description: TEST1
+        spanning_tree_portfast: edge
+  - name: dc2-server1
+    adapters:
+      - endpoint_ports: [Ethernet1, Ethernet2]
+        switch_ports: [Ethernet6, Ethernet7]
+        switches: [dc2-l1a, dc2-l1b]
+        vlans: 10,20,30
+        native_vlan: 4092
+        mode: trunk
+        port_channel:
+          mode: active
+          description: TEST2
+        spanning_tree_portfast: edge
+
+  - name: PHONE01_untagged_phone
+    adapters:
+      - endpoint_ports: [ Eth0 ]
+        switch_ports: [ Ethernet12 ]
+        switches: [ dc2-l1a ]
+        profile: PHONES
+
+  - name: server01
+    rack: RackB
+    adapters:
+      - endpoint_ports: [ E0, E1 ]
+        switch_ports: [ Ethernet10, Ethernet10 ]
+        switches: [ dc2-l1a, dc2-l1b ]
+        profile: VM_Servers
+        port_channel:
+          description: PortChanne1
+          mode: active

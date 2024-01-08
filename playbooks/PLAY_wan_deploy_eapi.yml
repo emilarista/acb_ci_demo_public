@@ -1,0 +1,30 @@
+---
+- name: Build Switch configuration
+  hosts: WAN
+  connection: local
+  gather_facts: false
+  collections:
+    - arista.avd
+
+  tasks:
+    - name: generate intended variables
+      import_role:
+        name: arista.avd.eos_designs
+      vars:
+        design:
+          type: "mpls"
+      diff: false
+      check_mode: false
+
+    - name: generate device intended config and documentation
+      import_role:
+        name: arista.avd.eos_cli_config_gen
+      diff: false
+      check_mode: false
+
+    - name: deploy configuration to device
+      tags: [ deploy, never ]
+      import_role:
+        name: arista.avd.eos_config_deploy_eapi
+      diff: true
+      check_mode: true

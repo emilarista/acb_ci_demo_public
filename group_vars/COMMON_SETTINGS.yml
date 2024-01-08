@@ -1,0 +1,142 @@
+---
+
+# Local users
+local_users:
+  - name: admin
+    privilege: 15
+    role: network-admin
+    no_password: true
+
+  - name: arista
+    privilege: 15
+    role: network-admin
+    # arista
+    sha512_password: "$6$FvCp296rTFvxHAbj$ZR47nIaLa4KRilnnhteQ/LscGh0i4RlVlSb07j0cwNXaVtOO.wJHHpTEJdeW79WUpfNjXQJrUMFmql32vlyWd."
+
+  - name: cvpadmin
+    privilege: 15
+    role: network-admin
+    # arista1234
+    sha512_password: "$6$GEuL9YkGv9j0oh0z$6uAf8u0CyIVklzpTMsRcolkfGq6iPZb/lDR8hwIPHra9RJuSBdtUNQdScN7gPyir5KRubKkbfwLLJYb0lq3B5."
+
+  # dummy:
+  #   privilege: 15
+  #   role: network-admin
+  #   no_password: true
+
+# Cloud Vision server information
+# cvp_instance_ip: 10.30.30.5
+# This ingest key is set at CVP install time.
+# cvp_ingestauth_key: 1a38fe7df56879d685e51b6f0ff86327
+
+# OOB Management network default gateway.
+mgmt_gateway: 192.168.0.5
+
+# dns servers.
+name_servers:
+  - 8.8.8.8
+  - 8.8.4.4
+
+# NTP Servers IP or DNS
+# First NTP server will be preferred
+# Sourced from Managment VRF
+ntp_servers:
+  - 0.se.pool.ntp.org
+  - 1.se.pool.ntp.org
+
+underlay_isis_instance_name: CORE
+
+# bgp peer groups passwords
+bgp_peer_groups:
+  mpls_overlay_peers:
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+  rr_overlay_peers:
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+  evpn_overlay_peers:
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+  ipvpn_gateway_peers:
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+
+internal_vlan_order:
+  allocation: ascending
+  range:
+    beginning: 3700
+    ending: 3900
+
+# BGP max-paths and ecmp
+bgp_maximum_paths: 4
+bgp_ecmp: 4
+# evpn_ebgp_multihop: 10
+
+# Adjust default bfd values if desired.
+bfd_multihop:
+  interval: 10000
+  min_rx: 10000
+  multiplier: 3
+
+# Interface defaults for unused ports
+interface_defaults:
+  ethernet:
+    shutdown: true
+
+switchport_default:
+  mode: routed
+
+# Common password seed
+management_security:
+  password:
+    encryption_key_common: true
+
+custom_structured_configuration_management_api_http:
+  enable_https: true
+  enable_vrfs:
+    MGMT:
+    default:
+
+network_services_keys:
+  - name: tenants
+  - name: c1_tenants
+  - name: c2_tenants
+  - name: c3_tenants
+
+# Endpoint keys
+connected_endpoints_keys:
+  cpes:
+    type: cpe
+  servers:
+    type: server
+
+custom_structured_configuration_daemon_terminattr:
+  cvaddrs:
+    - 192.168.0.5:9910
+  cvvrf: MGMT
+  cvauth:
+    method: "token"
+    token_file: "/tmp/token"
+  ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
+  smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
+
+eos_cli: |
+  agent KernelFib environment KERNELFIB_PROGRAM_ALL_ECMP='true'
+  platform tfa personality arfa
+
+#  platform tfa personality python
+
+custom_structured_configuration_router_isis:
+  advertise:
+    passive_only: true
+
+# custom_structured_configuration_router_bgp:
+#   updates:
+#     wait_install: false
+
+ansible_connection: httpapi
+ansible_network_os: eos
+ansible_user: cvpadmin
+# should use vault for passwords - leaving un-encrypted for ease of sharing for labs
+ansible_ssh_pass: arista1234
+ansible_become: true
+ansible_become_method: enable
+ansible_httpapi_use_ssl: true
+ansible_httpapi_validate_certs: false
+validation_mode_loose: true

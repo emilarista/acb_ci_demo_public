@@ -1,0 +1,11 @@
+---
+- name: Validate fabric state
+  hosts: WAN
+  connection: httpapi
+  gather_facts: false
+  ignore_unreachable: true
+
+  tasks:
+    - name: Run validation tasks
+      import_role:
+        name: arista.avd.eos_validate_state

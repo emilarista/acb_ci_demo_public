@@ -1,0 +1,26 @@
+---
+# Versions
+act_eos_version: "4.29.2F"
+# act_generic_os_version: "Rocky-8.5"
+act_cvp_version: "2022.3.1"
+
+# Device (veos/generic) user/pass
+act_device_user: "cvpadmin"
+act_device_password: "arista1234"
+
+# CVP user/pass
+act_cvp_user: "root"
+act_cvp_password: "cvproot"
+act_cvp_instance_type: "singlenode"
+
+# Whether to add cvp and ansible node to topology
+act_add_cvp: true
+act_add_ansible_node: false
+
+# Add act connected nodes
+act_add_connected_nodes: true
+
+act_connected_nodes_map:
+  other: 'veos'
+  server: 'veos'
+  l3_interface: 'veos'

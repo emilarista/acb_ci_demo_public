@@ -1,0 +1,149 @@
+---
+cvp_devices:
+  - fqdn: dc1-el1
+    parentContainerName: DC1_EDGELEAFS
+    configlets:
+      - AVD_DC_dc1-el1
+  - fqdn: dc1-el2
+    parentContainerName: DC1_EDGELEAFS
+    configlets:
+      - AVD_DC_dc1-el2
+  - fqdn: dc1-el3
+    parentContainerName: DC1_EDGELEAFS
+    configlets:
+      - AVD_DC_dc1-el3
+  - fqdn: dc1-l1a
+    parentContainerName: DC1_LEAFS
+    configlets:
+      - AVD_DC_dc1-l1a
+  - fqdn: dc1-l1b
+    parentContainerName: DC1_LEAFS
+    configlets:
+      - AVD_DC_dc1-l1b
+  - fqdn: dc1-l2a
+    parentContainerName: DC1_LEAFS
+    configlets:
+      - AVD_DC_dc1-l2a
+  - fqdn: dc1-l2b
+    parentContainerName: DC1_LEAFS
+    configlets:
+      - AVD_DC_dc1-l2b
+  - fqdn: dc1-l3a
+    parentContainerName: DC1_LEAFS
+    configlets:
+      - AVD_DC_dc1-l3a
+  - fqdn: dc1-l3b
+    parentContainerName: DC1_LEAFS
+    configlets:
+      - AVD_DC_dc1-l3b
+  - fqdn: dc1-l4a
+    parentContainerName: DC1_LEAFS
+    configlets:
+      - AVD_DC_dc1-l4a
+  - fqdn: dc1-l4b
+    parentContainerName: DC1_LEAFS
+    configlets:
+      - AVD_DC_dc1-l4b
+  - fqdn: dc1-l5a
+    parentContainerName: DC1_LEAFS
+    configlets:
+      - AVD_DC_dc1-l5a
+  - fqdn: dc1-l5b
+    parentContainerName: DC1_LEAFS
+    configlets:
+      - AVD_DC_dc1-l5b
+  - fqdn: dc1-sp1
+    parentContainerName: DC1_SPINES
+    configlets:
+      - AVD_DC_dc1-sp1
+  - fqdn: dc1-sp2
+    parentContainerName: DC1_SPINES
+    configlets:
+      - AVD_DC_dc1-sp2
+  - fqdn: dc1-sp3
+    parentContainerName: DC1_SPINES
+    configlets:
+      - AVD_DC_dc1-sp3
+  - fqdn: dc2-el1
+    parentContainerName: DC2_EDGELEAFS
+    configlets:
+      - AVD_DC_dc2-el1
+  - fqdn: dc2-el2
+    parentContainerName: DC2_EDGELEAFS
+    configlets:
+      - AVD_DC_dc2-el2
+  - fqdn: dc2-el3
+    parentContainerName: DC2_EDGELEAFS
+    configlets:
+      - AVD_DC_dc2-el3
+  - fqdn: dc2-l1a
+    parentContainerName: DC2_LEAFS
+    configlets:
+      - AVD_DC_dc2-l1a
+  - fqdn: dc2-l1b
+    parentContainerName: DC2_LEAFS
+    configlets:
+      - AVD_DC_dc2-l1b
+  - fqdn: dc2-l2a
+    parentContainerName: DC2_LEAFS
+    configlets:
+      - AVD_DC_dc2-l2a
+  - fqdn: dc2-l2b
+    parentContainerName: DC2_LEAFS
+    configlets:
+      - AVD_DC_dc2-l2b
+  - fqdn: dc2-l3a
+    parentContainerName: DC2_LEAFS
+    configlets:
+      - AVD_DC_dc2-l3a
+  - fqdn: dc2-l3b
+    parentContainerName: DC2_LEAFS
+    configlets:
+      - AVD_DC_dc2-l3b
+  - fqdn: dc2-l4a
+    parentContainerName: DC2_LEAFS
+    configlets:
+      - AVD_DC_dc2-l4a
+  - fqdn: dc2-l4b
+    parentContainerName: DC2_LEAFS
+    configlets:
+      - AVD_DC_dc2-l4b
+  - fqdn: dc2-l5a
+    parentContainerName: DC2_LEAFS
+    configlets:
+      - AVD_DC_dc2-l5a
+  - fqdn: dc2-l5b
+    parentContainerName: DC2_LEAFS
+    configlets:
+      - AVD_DC_dc2-l5b
+  - fqdn: dc2-sp1
+    parentContainerName: DC2_SPINES
+    configlets:
+      - AVD_DC_dc2-sp1
+  - fqdn: dc2-sp2
+    parentContainerName: DC2_SPINES
+    configlets:
+      - AVD_DC_dc2-sp2
+  - fqdn: dc2-sp3
+    parentContainerName: DC2_SPINES
+    configlets:
+      - AVD_DC_dc2-sp3
+cvp_containers:
+  DC1:
+    parentContainerName: DC
+  DC1_EDGELEAFS:
+    parentContainerName: DC1_LEAFS
+  DC1_LEAFS:
+    parentContainerName: DC1
+  DC1_SPINES:
+    parentContainerName: DC1
+  DC2:
+    parentContainerName: DC
+  DC2_EDGELEAFS:
+    parentContainerName: DC2_LEAFS
+  DC2_LEAFS:
+    parentContainerName: DC2
+  DC2_SPINES:
+    parentContainerName: DC2
+  DC:
+    parentContainerName: Tenant

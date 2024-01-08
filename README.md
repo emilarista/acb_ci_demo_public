@@ -2,7 +2,7 @@
 
 ## MPLS Data Plane
 
-MPLS Data Plane in ACT tends to work best with arfa personality:
+MPLS Data Plane in ACT and vEOS in general tends to work best with arfa personality:
 
 ```eos
 platform tfa personality arfa

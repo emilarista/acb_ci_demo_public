@@ -1,0 +1,61 @@
+# workflow triggers
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - run_anta
+
+jobs:
+  run-anta-on-production:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Install ANTA
+        run: pip install anta
+
+      - name: Install OpenVPN
+        run: sudo apt install openvpn
+
+      - name: Checkout Repository
+        uses: actions/checkout@main
+
+      - name: Build openvpn client config
+        run: 'sudo echo "$PROFILE" >> client.conf'
+        env:
+          PROFILE: ${{ secrets.OVPN_PROFILE }}
+
+      - name: VPN Setup
+        run: sudo cp client.conf /etc/openvpn/client.conf
+
+      - name: Start VPN
+        run: sudo systemctl start openvpn@client
+
+      - name: sleep
+        run: sleep 3
+
+      - name: check Liveliness and Reachability of Production CVP
+        run: ping -c 2 10.255.30.70
+
+      - name:  Run ANTA on leafs
+        run: anta --username <redacted> --password <redacted> -i anta/anta_prod_inventory.yml --enable --ignore-status nrfu -c anta/anta_tests_leaf.yml json --tags leaf -o anta/anta-prod-leaf-result.json > /dev/null
+        continue-on-error: true
+        id: anta_leaf
+
+      - name:  Run ANTA on spines
+        run: anta --username <redacted> --password <redacted> -i anta/anta_prod_inventory.yml --enable --ignore-status nrfu -c anta/anta_tests_spine.yml json --tags spine -o anta/anta-prod-spine-result.json  > /dev/null
+        continue-on-error: true
+        id: anta_spine
+
+      - name:  Run ANTA on edge leafs
+        run: anta --username <redacted> --password <redacted> -i anta/anta_prod_inventory.yml --enable --ignore-status nrfu -c anta/anta_tests_edgeleaf.yml json --tags edgeleaf -o anta/anta-prod-edgeleaf-result.json  > /dev/null
+        continue-on-error: true
+        id: anta_edgeleaf
+
+      - name:  Run ANTA on edge pes
+        run: anta --username <redacted> --password <redacted> -i anta/anta_prod_inventory.yml --enable --ignore-status nrfu -c anta/anta_tests_edgepe.yml json --tags edgepe -o anta/anta-prod-edgepe-result.json  > /dev/null
+        continue-on-error: true
+        id: anta_edgepe
+
+      - name: Run ANTA-checker on errors
+        if: (steps.anta_leaf.outputs.result == failure() || steps.anta_spine.outputs.result == failure() || steps.anta_edgeleaf.outputs.result == failure() || steps.anta_edgepe.outputs.result == failure())
+        run: python3 scripts/anta-checker.py

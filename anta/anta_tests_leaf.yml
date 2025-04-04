@@ -1,0 +1,97 @@
+---
+anta.tests.configuration:
+  - VerifyZeroTouch:
+  - VerifyRunningConfigDiffs:
+
+# anta.tests.connectivity:
+#   - VerifyReachability:
+#       template_params:
+#         # DC1
+#         - src: Loopback0
+#           dst: 100.64.2.1 # dc1-spine1
+#         - src: Loopback0
+#           dst: 100.64.2.2 # dc1-spine2
+#         - src: Loopback0
+#           dst: 100.64.2.3 # dc1-spine3
+#         # DC2
+#         - src: Loopback0
+#           dst: 100.66.2.1 # dc2-spine1
+#         - src: Loopback0
+#           dst: 100.66.2.2 # dc2-spine2
+#         - src: Loopback0
+#           dst: 100.66.2.3 # dc2-spine3
+
+anta.tests.interfaces:
+  - VerifyInterfaceUtilization:
+  # - VerifyInterfaceErrors:
+  - VerifyInterfaceDiscards:
+  - VerifyInterfaceErrDisabled:
+  - VerifyInterfacesStatus: # 3 spine links all should be up
+      minimum: 3
+  - VerifyIllegalLACP:
+  - VerifyLoopbackCount: # lo0, lo1
+      number: 2
+  - VerifySVI:
+
+anta.tests.mlag:
+  - VerifyMlagStatus:
+  - VerifyMlagInterfaces:
+  - VerifyMlagConfigSanity:
+  - VerifyMlagReloadDelay:
+      reload_delay: 300
+      reload_delay_non_mlag: 330
+
+anta.tests.software:
+  - VerifyEOSVersion:
+      versions:
+        - 4.29.2F
+
+  - VerifyTerminAttrVersion:
+      versions:
+        - v1.25.0
+  - VerifyEOSExtensions:
+
+anta.tests.stp:
+  - VerifySTPMode:
+      mode: mstp
+      template_params:
+        - vlan: 10
+        - vlan: 20
+        - vlan: 30
+  - VerifySTPBlockedPorts:
+  - VerifySTPCounters:
+  - VerifySTPForwardingPorts:
+      template_params:
+        - vlan: 10
+        - vlan: 20
+        - vlan: 30
+
+anta.tests.vxlan:
+ - VerifyVxlan1Interface:
+ - VerifyVxlanConfigSanity:
+
+anta.tests.routing:
+  generic:
+    - VerifyRoutingProtocolModel:
+        model: multi-agent
+    - VerifyRoutingTableSize:
+        minimum: 2
+        maximum: 200
+    - VerifyBFD:
+  bgp:
+    # - VerifyBGPIPv4UnicastState:
+    # - VerifyBGPIPv4UnicastCount:
+    #     number: 3
+    #     template_params:
+    #       - vrf: default
+    # - VerifyBGPIPv6UnicastState:
+    - VerifyBGPEVPNState:
+    - VerifyBGPEVPNCount:
+        number: 3
+    # - VerifyBGPRTCState:
+    # - VerifyBGPRTCCount:
+    #     number: 2
+  # ospf:
+  #   - VerifyOSPFNeighborState:
+  #   - VerifyOSPFNeighborCount:
+  #       number: 3

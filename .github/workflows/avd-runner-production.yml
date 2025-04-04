@@ -1,0 +1,61 @@
+# Credit to Marcus McPeek for supplying this CI file.
+name: 'CI Runner to demonstrate production AVD deployment'
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'group_vars/*'
+
+jobs:
+
+  run-avd-deploy-on-production:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Ansible
+        run: pip install ansible-core==2.14.2
+
+      - name: Install Arista AVD
+        run: ansible-galaxy collection install arista.avd:==4.0.0-dev9
+
+      - name: Install AVD Requirements
+        run: sudo pip install -r ~/.ansible/collections/ansible_collections/arista/avd/requirements.txt
+
+      - name: Upgrade requests to 2.27.0 or above
+        run: pip install requests>=2.27.0 --upgrade
+
+      - name: Install OpenVPN
+        run: sudo apt install openvpn
+
+      - name: Checkout Repository
+        uses: actions/checkout@main
+
+      - name: Build openvpn client config
+        run: 'sudo echo "$PROFILE" >> client.conf'
+        env:
+          PROFILE: ${{ secrets.OVPN_PROFILE }}
+
+      - name: VPN Setup
+        run: sudo cp client.conf /etc/openvpn/client.conf
+
+      - name: Start VPN
+        run: sudo systemctl start openvpn@client
+
+      - name: sleep
+        run: sleep 3
+
+      - name: check Liveliness and Reachability of Production CVP
+        run: ping -c 2 10.255.30.70
+
+      - name: Build and Deploy Configurations to Production Environment
+        run: ansible-playbook -i inventory-production.yml playbooks/PLAY_dc_deploy.yml --skip-tags=documentation
+
+      - name: Build and Deploy WAN Configurations to Production Environment
+        run: ansible-playbook -i inventory-production.yml playbooks/PLAY_wan_deploy.yml --skip-tags=documentation
+
+      # - name: Upload verification reports to github
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #     name: verification
+      #     path: reports/ # or path/to/artifact

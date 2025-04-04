@@ -1,0 +1,204 @@
+daemon_terminattr:
+  cvaddrs:
+  - 192.168.0.5:9910
+  cvauth:
+    method: token
+    token_file: /tmp/token
+  cvvrf: MGMT
+  ingestexclude: /Sysdb/cell/1/agent,/Sysdb/cell/2/agent
+  smashexcludes: ale,flexCounter,hardware,kni,pulse,strata
+ethernet_interfaces:
+- description: P2P_LINK_TO_s2-p1_Ethernet6
+  ip_address: 100.65.1.51/31
+  ipv6_enable: true
+  isis_authentication_key: $1c$sTNAlR6rKSw=
+  isis_authentication_mode: md5
+  isis_circuit_type: level-2
+  isis_enable: CORE
+  isis_hello_padding: false
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mpls:
+    ip: true
+  mtu: 1500
+  name: Ethernet6
+  peer: s2-p1
+  peer_interface: Ethernet6
+  peer_type: p
+  shutdown: false
+  type: routed
+- description: P2P_LINK_TO_s2-p2_Ethernet6
+  ip_address: 100.65.1.61/31
+  ipv6_enable: true
+  isis_authentication_key: $1c$sTNAlR6rKSw=
+  isis_authentication_mode: md5
+  isis_circuit_type: level-2
+  isis_enable: CORE
+  isis_hello_padding: false
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mpls:
+    ip: true
+  mtu: 1500
+  name: Ethernet5
+  peer: s2-p2
+  peer_interface: Ethernet6
+  peer_type: rr
+  shutdown: false
+  type: routed
+- description: P2P_LINK_TO_s2-p3_Ethernet3
+  ip_address: 100.65.1.67/31
+  ipv6_enable: true
+  isis_authentication_key: $1c$sTNAlR6rKSw=
+  isis_authentication_mode: md5
+  isis_circuit_type: level-2
+  isis_enable: CORE
+  isis_hello_padding: false
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mpls:
+    ip: true
+  mtu: 1500
+  name: Ethernet3
+  peer: s2-p3
+  peer_interface: Ethernet3
+  peer_type: p
+  shutdown: false
+  type: routed
+- description: P2P_LINK_TO_s2-edge-pe1_Ethernet2
+  ip_address: 100.65.1.70/31
+  ipv6_enable: true
+  isis_authentication_key: $1c$sTNAlR6rKSw=
+  isis_authentication_mode: md5
+  isis_circuit_type: level-2
+  isis_enable: CORE
+  isis_hello_padding: false
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mpls:
+    ip: true
+  mtu: 1500
+  name: Ethernet1
+  peer: s2-edge-pe1
+  peer_interface: Ethernet2
+  peer_type: pe
+  shutdown: false
+  type: routed
+- description: P2P_LINK_TO_s2-edge-pe2_Ethernet2
+  ip_address: 100.65.1.72/31
+  ipv6_enable: true
+  isis_authentication_key: $1c$sTNAlR6rKSw=
+  isis_authentication_mode: md5
+  isis_circuit_type: level-2
+  isis_enable: CORE
+  isis_hello_padding: false
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mpls:
+    ip: true
+  mtu: 1500
+  name: Ethernet2
+  peer: s2-edge-pe2
+  peer_interface: Ethernet2
+  peer_type: pe
+  shutdown: false
+  type: routed
+- description: P2P_LINK_TO_branch3-pe2_Ethernet1
+  ip_address: 100.65.1.74/31
+  ipv6_enable: true
+  isis_authentication_key: $1c$sTNAlR6rKSw=
+  isis_authentication_mode: md5
+  isis_circuit_type: level-2
+  isis_enable: CORE
+  isis_hello_padding: false
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mpls:
+    ip: true
+  mtu: 1500
+  name: Ethernet4
+  peer: branch3-pe2
+  peer_interface: Ethernet1
+  peer_type: pe
+  shutdown: false
+  type: routed
+hostname: s2-p4
+ip_name_servers:
+- ip_address: 8.8.8.8
+  vrf: MGMT
+- ip_address: 8.8.4.4
+  vrf: MGMT
+ip_routing: true
+is_deployed: true
+local_users:
+- name: admin
+  no_password: true
+  privilege: 15
+  role: network-admin
+- name: arista
+  privilege: 15
+  role: network-admin
+  sha512_password: <redacted>
+- name: cvpadmin
+  privilege: 15
+  role: network-admin
+  sha512_password: <redacted>
+loopback_interfaces:
+- description: LSR_Router_ID
+  ip_address: 100.65.2.6/32
+  isis_enable: CORE
+  isis_passive: true
+  name: Loopback0
+  node_segment:
+    ipv4_index: 106
+  shutdown: false
+management_api_http:
+  enable_https: true
+  enable_vrfs:
+  - name: MGMT
+  - name: default
+management_interfaces:
+- description: oob_management
+  gateway: 192.168.0.5
+  ip_address: 192.168.0.58/24
+  name: Management1
+  shutdown: false
+  type: oob
+  vrf: MGMT
+mpls:
+  ip: true
+router_isis:
+  address_family_ipv4:
+    enabled: true
+    fast_reroute_ti_lfa:
+      mode: link-protection
+    maximum_paths: 4
+  advertise:
+    passive_only: true
+  instance: CORE
+  is_type: level-2
+  log_adjacency_changes: true
+  net: 49.0001.0000.0005.0006.00
+  router_id: 100.65.2.6
+  segment_routing_mpls:
+    enabled: true
+    router_id: 100.65.2.6
+  timers:
+    local_convergence:
+      delay: 15000
+      protected_prefixes: true
+service_routing_protocols_model: multi-agent
+spanning_tree:
+  mode: none
+static_routes:
+- destination_address_prefix: 0.0.0.0/0
+  gateway: 192.168.0.5
+  vrf: MGMT
+vlan_internal_order:
+  allocation: ascending
+  range:
+    beginning: 3700
+    ending: 3900
+vrfs:
+- ip_routing: false
+  name: MGMT

@@ -1,0 +1,56 @@
+c3_tenants:
+  CUSTOMER3:
+    enable_mlag_ibgp_peering_vrfs: false
+    mac_vrf_id_base: 30000
+    mac_vrf_vni_base: 30000
+    vrfs:
+      C3_VRF1:
+        additional_route_targets:
+        - address_family: vpn-ipv4
+          nodes:
+          - dc1-el1
+          - dc1-el2
+          - dc1-el3
+          - dc2-el1
+          - dc2-el2
+          - dc2-el3
+          route_target: '65001:30'
+          type: export
+        - address_family: vpn-ipv4
+          nodes:
+          - dc1-el1
+          - dc1-el2
+          - dc1-el3
+          - dc2-el1
+          - dc2-el2
+          - dc2-el3
+          route_target: '65001:30'
+          type: import
+        address_families:
+        - vpn-ipv4
+        - evpn
+        l3_interfaces:
+        - description: C3-BRANCH3-CPE1
+          enabled: true
+          interfaces:
+          - Ethernet3
+          - Ethernet3
+          ip_addresses:
+          - 172.18.0.2/28
+          - 172.18.0.3/28
+          nodes:
+          - branch3-pe1
+          - branch3-pe2
+        ospf:
+          enabled: true
+          nodes:
+          - branch3-pe1
+          - branch3-pe2
+        svis:
+          30:
+            enabled: true
+            ip_address_virtual: 10.3.30.1/24
+            name: C3_30
+            tags:
+            - dc
+        vrf_id: 30

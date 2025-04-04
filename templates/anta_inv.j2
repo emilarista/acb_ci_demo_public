@@ -1,0 +1,39 @@
+anta_inventory:
+  hosts:
+{% for node in groups['DC'] | arista.avd.natural_sort %}
+{#     generating DC nodes #}
+{%     if "el" in node %}
+    - host: {{ hostvars[node].ansible_host }}
+      name: {{ node }}
+      tags: [ 'dc', 'edgeleaf' ]
+{%     elif "l" in node %}
+    - host: {{ hostvars[node].ansible_host }}
+      name: {{ node }}
+      tags: [ 'dc', 'leaf' ]
+{%     endif %}
+{%     if "sp" in node %}
+    - host: {{ hostvars[node].ansible_host }}
+      name: {{ node }}
+      tags: [ 'dc', 'spine' ]
+{%     endif %}
+{% endfor %}
+{#     generating WAN nodes #}
+{% for node in groups["PE_ROUTERS"] %}
+    - host: {{ hostvars[node].ansible_host }}
+      name: {{ node }}
+{%     if "edge" in node %}
+      tags: [ 'wan', 'edgepe' ]
+{%     elif "branch" in node %}
+      tags: [ 'wan', 'branchpe' ]
+{%     endif %}
+{% endfor %}
+{% for node in groups["P_ROUTERS"] %}
+    - host: {{ hostvars[node].ansible_host }}
+      name: {{ node }}
+      tags: [ 'wan', 'p' ]
+{% endfor %}
+{% for node in groups["RR_ROUTERS"] %}
+    - host: {{ hostvars[node].ansible_host }}
+      name: {{ node }}
+      tags: [ 'wan', 'rr' ]
+{% endfor %}

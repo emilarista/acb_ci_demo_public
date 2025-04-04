@@ -1,0 +1,14 @@
+act_add_ansible_node: false
+act_add_connected_nodes: true
+act_add_cvp: true
+act_connected_nodes_map:
+  l3_interface: veos
+  other: veos
+  server: veos
+act_cvp_instance_type: singlenode
+act_cvp_password: <redacted>
+act_cvp_user: <redacted>
+act_cvp_version: 2022.3.1
+act_device_password: <redacted>
+act_device_user: <redacted>
+act_eos_version: 4.29.2F

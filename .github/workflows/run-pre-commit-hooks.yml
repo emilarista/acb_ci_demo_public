@@ -1,0 +1,26 @@
+name: 'Linter for each push to non-main branch'
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+    paths:
+      - 'group_vars/*'
+
+jobs:
+  precommit:
+    name: 'Precommit Hooks'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+
+      - name: Install Python requirements
+        run: pip3 install -r requirements.txt
+
+      - name: Run pre-commit on files
+        uses: pre-commit/action@v3.0.0

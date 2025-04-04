@@ -1,0 +1,206 @@
+daemon_terminattr:
+  cvaddrs:
+  - 192.168.0.5:9910
+  cvauth:
+    method: token
+    token_file: /tmp/token
+  cvvrf: MGMT
+  ingestexclude: /Sysdb/cell/1/agent,/Sysdb/cell/2/agent
+  smashexcludes: ale,flexCounter,hardware,kni,pulse,strata
+eos_cli: 'agent KernelFib environment KERNELFIB_PROGRAM_ALL_ECMP=''true''
+
+  platform tfa personality arfa
+
+  '
+ethernet_interfaces:
+- description: P2P_LINK_TO_s1-p3_Ethernet4
+  ip_address: 100.65.1.33/31
+  ipv6_enable: true
+  isis_authentication_key: $1c$sTNAlR6rKSw=
+  isis_authentication_mode: md5
+  isis_circuit_type: level-2
+  isis_enable: CORE
+  isis_hello_padding: false
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mpls:
+    ip: true
+  mtu: 1500
+  name: Ethernet1
+  peer: s1-p3
+  peer_interface: Ethernet4
+  peer_type: p
+  shutdown: false
+  type: routed
+- description: C2-BRANCH2-CPE1
+  ip_address: 172.17.0.1/31
+  name: Ethernet2
+  ospf_area: '0'
+  ospf_network_point_to_point: false
+  peer_type: l3_interface
+  shutdown: false
+  type: routed
+  vrf: C2_VRF1
+hostname: branch2-pe1
+ip_igmp_snooping:
+  globally_enabled: true
+ip_name_servers:
+- ip_address: 8.8.8.8
+  vrf: MGMT
+- ip_address: 8.8.4.4
+  vrf: MGMT
+ip_routing: true
+ip_virtual_router_mac_address: 00:1c:73:00:dc:00
+is_deployed: true
+local_users:
+- name: admin
+  no_password: true
+  privilege: 15
+  role: network-admin
+- name: arista
+  privilege: 15
+  role: network-admin
+  sha512_password: <redacted>
+- name: cvpadmin
+  privilege: 15
+  role: network-admin
+  sha512_password: <redacted>
+loopback_interfaces:
+- description: MPLS_Overlay_peering
+  ip_address: 100.65.3.6/32
+  isis_enable: CORE
+  isis_passive: true
+  name: Loopback0
+  node_segment:
+    ipv4_index: 206
+  shutdown: false
+management_api_http:
+  enable_https: true
+  enable_vrfs:
+  - name: MGMT
+  - name: default
+management_interfaces:
+- description: oob_management
+  gateway: 192.168.0.5
+  ip_address: 192.168.0.52/24
+  name: Management1
+  shutdown: false
+  type: oob
+  vrf: MGMT
+mpls:
+  ip: true
+router_bfd:
+  multihop:
+    interval: 10000
+    min_rx: 10000
+    multiplier: 3
+router_bgp:
+  address_family_evpn:
+    peer_groups: []
+  address_family_ipv4:
+    peer_groups:
+    - activate: false
+      name: MPLS-OVERLAY-PEERS
+  address_family_vpn_ipv4:
+    neighbor_default_encapsulation_mpls_next_hop_self:
+      source_interface: Loopback0
+    peer_groups:
+    - activate: true
+      name: MPLS-OVERLAY-PEERS
+  as: '65001'
+  bgp:
+    default:
+      ipv4_unicast: false
+  bgp_defaults:
+  - no bgp default ipv4-unicast
+  - distance bgp 20 200 200
+  - graceful-restart restart-time 300
+  - graceful-restart
+  maximum_paths:
+    ecmp: 4
+    paths: 4
+  neighbors:
+  - description: s1-p2
+    ip_address: 100.65.4.1
+    peer_group: MPLS-OVERLAY-PEERS
+  - description: s2-p2
+    ip_address: 100.65.4.2
+    peer_group: MPLS-OVERLAY-PEERS
+  peer_groups:
+  - bfd: true
+    maximum_routes: 0
+    name: MPLS-OVERLAY-PEERS
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+    remote_as: '65001'
+    send_community: all
+    type: mpls
+    update_source: Loopback0
+  router_id: 100.65.3.6
+  vrfs:
+  - name: C2_VRF1
+    rd: 100.65.3.6:20
+    redistribute_routes:
+    - source_protocol: connected
+    - source_protocol: ospf
+    route_targets:
+      export:
+      - address_family: vpn-ipv4
+        route_targets:
+        - '65001:20'
+      import:
+      - address_family: vpn-ipv4
+        route_targets:
+        - '65001:20'
+    router_id: 100.65.3.6
+router_isis:
+  address_family_ipv4:
+    enabled: true
+    fast_reroute_ti_lfa:
+      mode: link-protection
+    maximum_paths: 4
+  advertise:
+    passive_only: true
+  instance: CORE
+  is_type: level-2
+  log_adjacency_changes: true
+  net: 49.0001.0000.0006.0006.00
+  router_id: 100.65.3.6
+  segment_routing_mpls:
+    enabled: true
+    router_id: 100.65.3.6
+  timers:
+    local_convergence:
+      delay: 15000
+      protected_prefixes: true
+router_ospf:
+  process_ids:
+  - id: 20
+    no_passive_interfaces:
+    - Ethernet2
+    passive_interface_default: true
+    redistribute:
+      bgp: {}
+    router_id: 100.65.3.6
+    vrf: C2_VRF1
+service_routing_protocols_model: multi-agent
+spanning_tree:
+  mode: mstp
+  mst_instances:
+  - id: '0'
+    priority: 4096
+  root_super: true
+static_routes:
+- destination_address_prefix: 0.0.0.0/0
+  gateway: 192.168.0.5
+  vrf: MGMT
+vlan_internal_order:
+  allocation: ascending
+  range:
+    beginning: 3700
+    ending: 3900
+vrfs:
+- ip_routing: false
+  name: MGMT
+- ip_routing: true
+  name: C2_VRF1
+  tenant: CUSTOMER2

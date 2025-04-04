@@ -1,0 +1,30 @@
+---
+- name: Build DC configuration
+  hosts: DC
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: generate intended variables
+      import_role:
+        name: arista.avd.eos_designs
+
+    - name: generate device intended config and documentation
+      import_role:
+        name: arista.avd.eos_cli_config_gen
+      when: structured_config.changed | arista.avd.default(true)
+
+- name: Build Switch configuration
+  hosts: WAN
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: generate intended variables
+      import_role:
+        name: arista.avd.eos_designs
+
+    - name: generate device intended config and documentation
+      import_role:
+        name: arista.avd.eos_cli_config_gen
+      when: structured_config.changed | arista.avd.default(true)

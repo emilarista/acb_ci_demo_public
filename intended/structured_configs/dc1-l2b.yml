@@ -1,0 +1,381 @@
+daemon_terminattr:
+  cvaddrs:
+  - 192.168.0.5:9910
+  cvauth:
+    method: token
+    token_file: /tmp/token
+  cvvrf: MGMT
+  ingestexclude: /Sysdb/cell/1/agent,/Sysdb/cell/2/agent
+  smashexcludes: ale,flexCounter,hardware,kni,pulse,strata
+eos_cli: 'agent KernelFib environment KERNELFIB_PROGRAM_ALL_ECMP=''true''
+
+  platform tfa personality arfa
+
+  '
+ethernet_interfaces:
+- channel_group:
+    id: 4
+    mode: active
+  description: MLAG_PEER_dc1-l2a_Ethernet4
+  name: Ethernet4
+  peer: dc1-l2a
+  peer_interface: Ethernet4
+  peer_type: mlag_peer
+  shutdown: false
+  type: port-channel-member
+- channel_group:
+    id: 4
+    mode: active
+  description: MLAG_PEER_dc1-l2a_Ethernet5
+  name: Ethernet5
+  peer: dc1-l2a
+  peer_interface: Ethernet5
+  peer_type: mlag_peer
+  shutdown: false
+  type: port-channel-member
+- description: P2P_LINK_TO_DC1-SP1_Ethernet4
+  ip_address: 100.64.1.19/31
+  isis_circuit_type: level-2
+  isis_enable: CORE
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mtu: 1500
+  name: Ethernet1
+  peer: dc1-sp1
+  peer_interface: Ethernet4
+  peer_type: spine
+  shutdown: false
+  type: routed
+- description: P2P_LINK_TO_DC1-SP2_Ethernet4
+  ip_address: 100.64.1.21/31
+  isis_circuit_type: level-2
+  isis_enable: CORE
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mtu: 1500
+  name: Ethernet2
+  peer: dc1-sp2
+  peer_interface: Ethernet4
+  peer_type: spine
+  shutdown: false
+  type: routed
+- description: P2P_LINK_TO_DC1-SP3_Ethernet4
+  ip_address: 100.64.1.23/31
+  isis_circuit_type: level-2
+  isis_enable: CORE
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mtu: 1500
+  name: Ethernet3
+  peer: dc1-sp3
+  peer_interface: Ethernet4
+  peer_type: spine
+  shutdown: false
+  type: routed
+hostname: dc1-l2b
+ip_igmp_snooping:
+  globally_enabled: true
+ip_name_servers:
+- ip_address: 8.8.8.8
+  vrf: MGMT
+- ip_address: 8.8.4.4
+  vrf: MGMT
+ip_routing: true
+ip_virtual_router_mac_address: 00:1c:73:00:dc:00
+is_deployed: true
+local_users:
+- name: admin
+  no_password: true
+  privilege: 15
+  role: network-admin
+- name: arista
+  privilege: 15
+  role: network-admin
+  sha512_password: <redacted>
+- name: cvpadmin
+  privilege: 15
+  role: network-admin
+  sha512_password: <redacted>
+loopback_interfaces:
+- description: EVPN_Overlay_Peering
+  ip_address: 100.64.2.14/32
+  isis_enable: CORE
+  isis_passive: true
+  name: Loopback0
+  shutdown: false
+- description: VTEP_VXLAN_Tunnel_Source
+  ip_address: 100.64.3.13/32
+  isis_enable: CORE
+  isis_passive: true
+  name: Loopback1
+  shutdown: false
+management_api_http:
+  enable_https: true
+  enable_vrfs:
+  - name: MGMT
+  - name: default
+management_interfaces:
+- description: oob_management
+  gateway: 192.168.0.5
+  ip_address: 192.168.0.17/24
+  lldp:
+    receive: false
+    transmit: true
+    ztp_vlan: 667
+  name: Management1
+  shutdown: false
+  type: oob
+  vrf: MGMT
+mlag_configuration:
+  domain_id: DC1-L2
+  local_interface: Vlan4094
+  peer_address: 100.64.4.4
+  peer_link: Port-Channel4
+  reload_delay_mlag: '300'
+  reload_delay_non_mlag: '330'
+port_channel_interfaces:
+- description: MLAG_PEER_dc1-l2a_Po4
+  mode: trunk
+  name: Port-Channel4
+  shutdown: false
+  trunk_groups:
+  - LEAF_PEER_L3
+  - MLAG
+  type: switched
+router_bfd:
+  multihop:
+    interval: 10000
+    min_rx: 10000
+    multiplier: 3
+router_bgp:
+  address_family_evpn:
+    peer_groups:
+    - activate: true
+      name: EVPN-OVERLAY-PEERS
+  address_family_ipv4:
+    peer_groups:
+    - activate: false
+      name: EVPN-OVERLAY-PEERS
+  as: '65000.102'
+  bgp:
+    default:
+      ipv4_unicast: false
+  bgp_defaults:
+  - no bgp default ipv4-unicast
+  - distance bgp 20 200 200
+  - graceful-restart restart-time 300
+  - graceful-restart
+  - bgp asn notation asdot
+  maximum_paths:
+    ecmp: 4
+    paths: 4
+  neighbors:
+  - description: dc1-sp1
+    ip_address: 100.64.2.1
+    peer_group: EVPN-OVERLAY-PEERS
+    remote_as: '65000.100'
+  - description: dc1-sp2
+    ip_address: 100.64.2.2
+    peer_group: EVPN-OVERLAY-PEERS
+    remote_as: '65000.100'
+  - description: dc1-sp3
+    ip_address: 100.64.2.3
+    peer_group: EVPN-OVERLAY-PEERS
+    remote_as: '65000.100'
+  peer_groups:
+  - bfd: true
+    ebgp_multihop: 10
+    maximum_routes: 0
+    name: EVPN-OVERLAY-PEERS
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+    send_community: all
+    type: evpn
+    update_source: Loopback0
+  router_id: 100.64.2.14
+  vlans:
+  - id: 10
+    rd: 100.64.2.14:10010
+    redistribute_routes:
+    - learned
+    route_targets:
+      both:
+      - 65000:10010
+    tenant: CUSTOMER1
+  - id: 20
+    rd: 100.64.2.14:20020
+    redistribute_routes:
+    - learned
+    route_targets:
+      both:
+      - 65000:20020
+    tenant: CUSTOMER2
+  - id: 30
+    rd: 100.64.2.14:30030
+    redistribute_routes:
+    - learned
+    route_targets:
+      both:
+      - 65000:30030
+    tenant: CUSTOMER3
+  vrfs:
+  - name: C1_VRF1
+    rd: 100.64.2.14:10
+    redistribute_routes:
+    - source_protocol: connected
+    route_targets:
+      export:
+      - address_family: evpn
+        route_targets:
+        - '65000:10'
+      import:
+      - address_family: evpn
+        route_targets:
+        - '65000:10'
+    router_id: 100.64.2.14
+  - name: C2_VRF1
+    rd: 100.64.2.14:20
+    redistribute_routes:
+    - source_protocol: connected
+    route_targets:
+      export:
+      - address_family: evpn
+        route_targets:
+        - '65000:20'
+      import:
+      - address_family: evpn
+        route_targets:
+        - '65000:20'
+    router_id: 100.64.2.14
+  - name: C3_VRF1
+    rd: 100.64.2.14:30
+    redistribute_routes:
+    - source_protocol: connected
+    route_targets:
+      export:
+      - address_family: evpn
+        route_targets:
+        - '65000:30'
+      import:
+      - address_family: evpn
+        route_targets:
+        - '65000:30'
+    router_id: 100.64.2.14
+router_isis:
+  address_family_ipv4:
+    enabled: true
+    maximum_paths: 4
+  advertise:
+    passive_only: true
+  instance: CORE
+  is_type: level-2
+  log_adjacency_changes: true
+  net: 49.0001.0000.0002.0004.00
+  router_id: 100.64.2.14
+service_routing_protocols_model: multi-agent
+spanning_tree:
+  mode: mstp
+  mst_instances:
+  - id: '0'
+    priority: 4096
+  no_spanning_tree_vlan: 4093-4094
+static_routes:
+- destination_address_prefix: 0.0.0.0/0
+  gateway: 192.168.0.5
+  vrf: MGMT
+vlan_interfaces:
+- description: MLAG_PEER_L3_PEERING
+  ip_address: 100.64.5.5/31
+  isis_enable: CORE
+  isis_metric: 50
+  isis_network_point_to_point: true
+  mtu: 1500
+  name: Vlan4093
+  shutdown: false
+- description: MLAG_PEER
+  ip_address: 100.64.4.5/31
+  mtu: 1500
+  name: Vlan4094
+  no_autostate: true
+  shutdown: false
+- description: C1_10
+  ip_address_virtual: 10.1.10.1/24
+  name: Vlan10
+  shutdown: false
+  tags:
+  - dc
+  tenant: CUSTOMER1
+  vrf: C1_VRF1
+- description: C2_20
+  ip_address_virtual: 10.2.20.1/24
+  name: Vlan20
+  shutdown: false
+  tags:
+  - dc
+  tenant: CUSTOMER2
+  vrf: C2_VRF1
+- description: C3_30
+  ip_address_virtual: 10.3.30.1/24
+  name: Vlan30
+  shutdown: false
+  tags:
+  - dc
+  tenant: CUSTOMER3
+  vrf: C3_VRF1
+vlan_internal_order:
+  allocation: ascending
+  range:
+    beginning: 3700
+    ending: 3900
+vlans:
+- id: 4093
+  name: LEAF_PEER_L3
+  tenant: system
+  trunk_groups:
+  - LEAF_PEER_L3
+- id: 4094
+  name: MLAG_PEER
+  tenant: system
+  trunk_groups:
+  - MLAG
+- id: 10
+  name: C1_10
+  tenant: CUSTOMER1
+- id: 20
+  name: C2_20
+  tenant: CUSTOMER2
+- id: 30
+  name: C3_30
+  tenant: CUSTOMER3
+vrfs:
+- ip_routing: false
+  name: MGMT
+- ip_routing: true
+  name: C1_VRF1
+  tenant: CUSTOMER1
+- ip_routing: true
+  name: C2_VRF1
+  tenant: CUSTOMER2
+- ip_routing: true
+  name: C3_VRF1
+  tenant: CUSTOMER3
+vxlan_interface:
+  Vxlan1:
+    description: dc1-l2b_VTEP
+    vxlan:
+      source_interface: Loopback1
+      udp_port: 4789
+      virtual_router_encapsulation_mac_address: mlag-system-id
+      vlans:
+      - id: 10
+        vni: 10010
+      - id: 20
+        vni: 20020
+      - id: 30
+        vni: 30030
+      vrfs:
+      - name: C1_VRF1
+        vni: 10
+      - name: C2_VRF1
+        vni: 20
+      - name: C3_VRF1
+        vni: 30

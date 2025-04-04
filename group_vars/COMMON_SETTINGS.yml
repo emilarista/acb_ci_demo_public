@@ -1,0 +1,90 @@
+ansible_become: true
+ansible_become_method: enable
+ansible_connection: httpapi
+ansible_httpapi_use_ssl: true
+ansible_httpapi_validate_certs: false
+ansible_network_os: eos
+ansible_ssh_pass: arista1234
+ansible_user: cvpadmin
+bfd_multihop:
+  interval: 10000
+  min_rx: 10000
+  multiplier: 3
+bgp_ecmp: 4
+bgp_maximum_paths: 4
+bgp_peer_groups:
+  evpn_overlay_peers:
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+  ipvpn_gateway_peers:
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+  mpls_overlay_peers:
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+  rr_overlay_peers:
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+connected_endpoints_keys:
+  cpes:
+    type: cpe
+  servers:
+    type: server
+custom_structured_configuration_daemon_terminattr:
+  cvaddrs:
+  - 192.168.0.5:9910
+  cvauth:
+    method: token
+    token_file: /tmp/token
+  cvvrf: MGMT
+  ingestexclude: /Sysdb/cell/1/agent,/Sysdb/cell/2/agent
+  smashexcludes: ale,flexCounter,hardware,kni,pulse,strata
+custom_structured_configuration_management_api_http:
+  enable_https: true
+  enable_vrfs:
+    MGMT: null
+    default: null
+custom_structured_configuration_router_isis:
+  advertise:
+    passive_only: true
+eos_cli: 'agent KernelFib environment KERNELFIB_PROGRAM_ALL_ECMP=''true''
+
+  platform tfa personality arfa
+
+  '
+interface_defaults:
+  ethernet:
+    shutdown: true
+internal_vlan_order:
+  allocation: ascending
+  range:
+    beginning: 3700
+    ending: 3900
+local_users:
+- name: admin
+  no_password: true
+  privilege: 15
+  role: network-admin
+- name: arista
+  privilege: 15
+  role: network-admin
+  sha512_password: <redacted>
+- name: cvpadmin
+  privilege: 15
+  role: network-admin
+  sha512_password: <redacted>
+management_security:
+  password:
+    encryption_key_common: true
+mgmt_gateway: 192.168.0.5
+name_servers:
+- 8.8.8.8
+- 8.8.4.4
+network_services_keys:
+- name: tenants
+- name: c1_tenants
+- name: c2_tenants
+- name: c3_tenants
+ntp_servers:
+- 0.se.pool.ntp.org
+- 1.se.pool.ntp.org
+switchport_default:
+  mode: routed
+underlay_isis_instance_name: CORE
+validation_mode_loose: true

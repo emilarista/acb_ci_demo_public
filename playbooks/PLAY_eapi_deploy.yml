@@ -1,0 +1,12 @@
+---
+- name: Deploy via EAPI to devices
+  hosts: COMMON_SETTINGS
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: deploy configuration to device
+      tags: [ deploy, never ]
+      import_role:
+        name: arista.avd.eos_config_deploy_eapi
+      # check_mode: true

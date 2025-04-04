@@ -1,0 +1,233 @@
+dc_name: DC2
+l3leaf:
+  defaults:
+    bgp_defaults:
+    - no bgp default ipv4-unicast
+    - distance bgp 20 200 200
+    - graceful-restart restart-time 300
+    - graceful-restart
+    - bgp asn notation asdot
+    evpn_route_servers:
+    - dc2-sp1
+    - dc2-sp2
+    - dc2-sp3
+    isis_system_id_prefix: '0000.0004'
+    loopback_ipv4_offset: 10
+    loopback_ipv4_pool: 100.66.2.0/24
+    mlag_interfaces:
+    - Ethernet4
+    - Ethernet5
+    mlag_peer_ipv4_pool: 100.66.4.0/24
+    mlag_peer_l3_ipv4_pool: 100.66.5.0/24
+    platform: vEOS-lab
+    spanning_tree_mode: mstp
+    spanning_tree_priority: 4096
+    uplink_interfaces:
+    - Ethernet1
+    - Ethernet2
+    - Ethernet3
+    uplink_ipv4_pool: 100.66.1.0/24
+    uplink_switches:
+    - dc2-sp1
+    - dc2-sp2
+    - dc2-sp3
+    virtual_router_mac_address: 00:1c:73:00:dc:00
+    vtep_loopback_ipv4_pool: 100.66.3.0/24
+  node_groups:
+    DC2-EDGELEAF:
+      bgp_as: '65000.206'
+      filter:
+        always_include_vrfs_in_tenants:
+        - CUSTOMER1
+        - CUSTOMER2
+        - CUSTOMER3
+        tags:
+        - dc
+        tenants:
+        - CUSTOMER1
+        - CUSTOMER2
+        - CUSTOMER3
+      ipvpn_gateway:
+        address_families:
+        - vpn-ipv4
+        enabled: true
+        evpn_domain_id: '1:1'
+        ipvpn_domain_id: '1:2'
+        local_as: '65001'
+        remote_peers:
+        - bgp_as: 65001
+          hostname: s1-p2
+          ip_address: 100.65.4.1
+        - bgp_as: 65001
+          hostname: s2-p2
+          ip_address: 100.65.4.2
+      mlag: false
+      nodes:
+        dc2-el1:
+          id: 11
+          mgmt_ip: 192.168.0.40/24
+          uplink_switch_interfaces:
+          - Ethernet11
+          - Ethernet11
+          - Ethernet11
+        dc2-el2:
+          id: 12
+          mgmt_ip: 192.168.0.41/24
+          uplink_switch_interfaces:
+          - Ethernet12
+          - Ethernet12
+          - Ethernet12
+        dc2-el3:
+          id: 13
+          mgmt_ip: 192.168.0.42/24
+          uplink_switch_interfaces:
+          - Ethernet13
+          - Ethernet13
+          - Ethernet13
+      structured_config:
+        loopback_interfaces:
+        - name: Loopback0
+          node_segment:
+            ipv4_index: '{{ 500 + switch.id  | int }}'
+        mpls:
+          ip: true
+        router_isis:
+          advertise:
+            passive_only: true
+          instance: CORE
+          segment_routing_mpls:
+            enabled: true
+            router_id: '{{ switch.router_id }}'
+    DC2-L1:
+      bgp_as: '65000.201'
+      filter:
+        tags:
+        - dc
+        tenants:
+        - all
+      nodes:
+        dc2-l1a:
+          id: 1
+          mgmt_ip: 192.168.0.30/24
+          uplink_switch_interfaces:
+          - Ethernet1
+          - Ethernet1
+          - Ethernet1
+        dc2-l1b:
+          id: 2
+          mgmt_ip: 192.168.0.31/24
+          uplink_switch_interfaces:
+          - Ethernet2
+          - Ethernet2
+          - Ethernet2
+    DC2-L2:
+      bgp_as: '65000.202'
+      filter:
+        tags:
+        - dc
+        tenants:
+        - all
+      nodes:
+        dc2-l2a:
+          id: 3
+          mgmt_ip: 192.168.0.32/24
+          uplink_switch_interfaces:
+          - Ethernet3
+          - Ethernet3
+          - Ethernet3
+        dc2-l2b:
+          id: 4
+          mgmt_ip: 192.168.0.33/24
+          uplink_switch_interfaces:
+          - Ethernet4
+          - Ethernet4
+          - Ethernet4
+    DC2-L3:
+      bgp_as: '65000.203'
+      filter:
+        tags:
+        - dc
+        tenants:
+        - all
+      nodes:
+        dc2-l3a:
+          id: 5
+          mgmt_ip: 192.168.0.34/24
+          uplink_switch_interfaces:
+          - Ethernet5
+          - Ethernet5
+          - Ethernet5
+        dc2-l3b:
+          id: 6
+          mgmt_ip: 192.168.0.35/24
+          uplink_switch_interfaces:
+          - Ethernet6
+          - Ethernet6
+          - Ethernet6
+    DC2-L4:
+      bgp_as: '65000.204'
+      filter:
+        tags:
+        - dc
+        tenants:
+        - all
+      nodes:
+        dc2-l4a:
+          id: 7
+          mgmt_ip: 192.168.0.36/24
+          uplink_switch_interfaces:
+          - Ethernet7
+          - Ethernet7
+          - Ethernet7
+        dc2-l4b:
+          id: 8
+          mgmt_ip: 192.168.0.37/24
+          uplink_switch_interfaces:
+          - Ethernet8
+          - Ethernet8
+          - Ethernet8
+    DC2-L5:
+      bgp_as: '65000.205'
+      filter:
+        tags:
+        - dc
+        tenants:
+        - all
+      nodes:
+        dc2-l5a:
+          id: 9
+          mgmt_ip: 192.168.0.38/24
+          uplink_switch_interfaces:
+          - Ethernet9
+          - Ethernet9
+          - Ethernet9
+        dc2-l5b:
+          id: 10
+          mgmt_ip: 192.168.0.39/24
+          uplink_switch_interfaces:
+          - Ethernet10
+          - Ethernet10
+          - Ethernet10
+spine:
+  defaults:
+    bgp_as: '65000.200'
+    bgp_defaults:
+    - no bgp default ipv4-unicast
+    - distance bgp 20 200 200
+    - graceful-restart restart-time 300
+    - graceful-restart
+    - bgp asn notation asdot
+    evpn_role: server
+    isis_system_id_prefix: '0000.0003'
+    loopback_ipv4_pool: 100.66.2.0/24
+    platform: vEOS-lab
+  nodes:
+    dc2-sp1:
+      id: 1
+      mgmt_ip: 192.168.0.27/24
+    dc2-sp2:
+      id: 2
+      mgmt_ip: 192.168.0.28/24
+    dc2-sp3:
+      id: 3
+      mgmt_ip: 192.168.0.29/24

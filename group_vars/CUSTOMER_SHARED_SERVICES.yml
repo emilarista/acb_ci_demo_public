@@ -1,0 +1,109 @@
+tenants:
+  SHARED:
+    mac_vrf_id_base: 40000
+    vrfs:
+      INTERNET:
+        additional_route_targets:
+        - address_family: vpn-ipv4
+          nodes:
+          - s1-edge-pe1
+          - s1-edge-pe2
+          - s2-edge-pe1
+          - s2-edge-pe2
+          route_target: '65001:10'
+          type: export
+        - address_family: vpn-ipv4
+          nodes:
+          - s1-edge-pe1
+          - s1-edge-pe2
+          - s2-edge-pe1
+          - s2-edge-pe2
+          route_target: '65001:10'
+          type: import
+        - address_family: vpn-ipv4
+          nodes:
+          - s1-edge-pe1
+          - s1-edge-pe2
+          - s2-edge-pe1
+          - s2-edge-pe2
+          route_target: '65001:20'
+          type: export
+        - address_family: vpn-ipv4
+          nodes:
+          - s1-edge-pe1
+          - s1-edge-pe2
+          - s2-edge-pe1
+          - s2-edge-pe2
+          route_target: '65001:20'
+          type: import
+        - address_family: vpn-ipv4
+          nodes:
+          - s1-edge-pe1
+          - s1-edge-pe2
+          - s2-edge-pe1
+          - s2-edge-pe2
+          route_target: '65001:30'
+          type: export
+        - address_family: vpn-ipv4
+          nodes:
+          - s1-edge-pe1
+          - s1-edge-pe2
+          - s2-edge-pe1
+          - s2-edge-pe2
+          route_target: '65001:30'
+          type: import
+        - address_family: vpn-ipv4
+          nodes:
+          - s1-edge-pe1
+          - s1-edge-pe2
+          - s2-edge-pe1
+          - s2-edge-pe2
+          route_target: YOUR_ROUTE_MAP_HERE
+          type: export
+        address_families:
+        - vpn-ipv4
+        - evpn
+        bgp_peers:
+        - description: ISP-test
+          ip_address: 172.31.0.0
+          local_as: 808
+          nodes:
+          - s1-edge-pe1
+          remote_as: 1234
+        - description: ISP
+          ip_address: 172.31.0.2
+          local_as: 808
+          nodes:
+          - s1-edge-pe2
+          remote_as: 1234
+        - description: ISP
+          ip_address: 172.31.0.4
+          local_as: 808
+          nodes:
+          - s2-edge-pe1
+          remote_as: 1234
+        - description: ISP
+          ip_address: 172.31.0.6
+          local_as: 808
+          nodes:
+          - s2-edge-pe2
+          remote_as: 1234
+        l3_interfaces:
+        - description: INTERNET-ISP1
+          enabled: true
+          interfaces:
+          - Ethernet3
+          - Ethernet3
+          - Ethernet3
+          - Ethernet3
+          ip_addresses:
+          - 172.31.0.1/31
+          - 172.31.0.3/31
+          - 172.31.0.5/31
+          - 172.31.0.7/31
+          nodes:
+          - s1-edge-pe1
+          - s1-edge-pe2
+          - s2-edge-pe1
+          - s2-edge-pe2
+        vrf_id: 1

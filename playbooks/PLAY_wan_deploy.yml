@@ -1,0 +1,36 @@
+---
+- name: Build Switch configuration
+  hosts: WAN
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: generate intended variables
+      import_role:
+        name: arista.avd.eos_designs
+
+    - name: generate device intended config and documentation
+      import_role:
+        name: arista.avd.eos_cli_config_gen
+      when: structured_config.changed | arista.avd.default(true)
+
+- name: Configuration deployment with CVP
+  hosts: cv_server
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: run CVP provisioning
+      import_role:
+        name: arista.avd.eos_config_deploy_cvp
+      vars:
+        container_root: 'WAN'
+        configlets_prefix: 'AVD_WAN'
+        execute_tasks: '{{ exec_tasks }}'
+        device_filter:
+          - "s1"
+          - "s2"
+          - "branch"
+        search_key: hostname
+        state: present
+        cv_collection: v3
+        apply_mode: strict

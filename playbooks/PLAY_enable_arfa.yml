@@ -1,0 +1,11 @@
+---
+- name: Configure Arfa mode
+  hosts: ACT
+  gather_facts: false
+
+  tasks:
+    - name: Configure Arfa mode
+      arista.eos.eos_command:
+        commands:
+          - configure terminal
+          - platform tfa personality arfa

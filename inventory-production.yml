@@ -1,0 +1,197 @@
+all:
+  children:
+    CVP:
+      hosts:
+        cv_server:
+          ansible_httpapi_host: 10.255.30.70
+          ansible_host: 10.255.30.70
+          ansible_user: cvaas
+          ansible_password: "***"
+          ansible_connection: httpapi
+          ansible_httpapi_use_ssl: true
+          ansible_httpapi_validate_certs: false
+          ansible_network_os: eos
+          ansible_httpapi_port: 443
+          ansible_python_interpreter: $(which python3)
+          exec_tasks: false
+          webhook_action_id: 'Wy7syljz4hTt3Smuk2Ag-'
+    WAN:
+      children:
+        PE_ROUTERS:
+          vars:
+            type: pe
+          hosts:
+            s1-edge-pe1:
+              ansible_host: 10.255.11.155
+            s1-edge-pe2:
+              ansible_host: 10.255.63.149
+            s2-edge-pe1:
+              ansible_host: 10.255.80.138
+            s2-edge-pe2:
+              ansible_host: 10.255.18.173
+            branch1-pe1:
+              ansible_host: 10.255.116.117
+            branch2-pe1:
+              ansible_host: 10.255.14.45
+            branch3-pe1:
+              ansible_host: 10.255.110.35
+            branch3-pe2:
+              ansible_host: 10.255.78.115
+        P_ROUTERS:
+          vars:
+            type: p
+          hosts:
+            s1-p1:
+              ansible_host: 10.255.119.74
+            s2-p1:
+              ansible_host: 10.255.86.28
+            s1-p3:
+              ansible_host: 10.255.0.78
+            s1-p4:
+              ansible_host: 10.255.115.140
+            s2-p3:
+              ansible_host: 10.255.126.148
+            s2-p4:
+              ansible_host: 10.255.54.44
+        RR_ROUTERS:
+          vars:
+            type: rr
+          hosts:
+            s1-p2:
+              ansible_host: 10.255.6.239
+            s2-p2:
+              ansible_host: 10.255.91.77
+    DC:
+      children:
+        DC1:
+          children:
+            DC1_LEAFS:
+              vars:
+                type: l3leaf
+              hosts:
+                dc1-l1a:
+                  ansible_host: 10.255.31.148
+                dc1-l1b:
+                  ansible_host: 10.255.29.21
+                dc1-l2a:
+                  ansible_host: 10.255.63.57
+                dc1-l2b:
+                  ansible_host: 10.255.82.6
+                dc1-l3a:
+                  ansible_host: 10.255.107.116
+                dc1-l3b:
+                  ansible_host: 10.255.24.216
+                dc1-l4a:
+                  ansible_host: 10.255.38.39
+                dc1-l4b:
+                  ansible_host: 10.255.91.215
+                dc1-l5a:
+                  ansible_host: 10.255.71.87
+                dc1-l5b:
+                  ansible_host: 10.255.121.17
+              children:
+                DC1_EDGELEAFS:
+                  hosts:
+                    dc1-el1:
+                      ansible_host: 10.255.88.68
+                    dc1-el2:
+                      ansible_host: 10.255.121.46
+                    dc1-el3:
+                      ansible_host: 10.255.1.80
+            DC1_SPINES:
+              vars:
+                type: spine
+              hosts:
+                dc1-sp1:
+                  ansible_host: 10.255.126.137
+                dc1-sp2:
+                  ansible_host: 10.255.32.140
+                dc1-sp3:
+                  ansible_host: 10.255.48.70
+        DC2:
+          children:
+            DC2_LEAFS:
+              vars:
+                type: l3leaf
+              hosts:
+                dc2-l1a:
+                  ansible_host: 10.255.57.241
+                dc2-l1b:
+                  ansible_host: 10.255.117.24
+                dc2-l2a:
+                  ansible_host: 10.255.31.126
+                dc2-l2b:
+                  ansible_host: 10.255.26.207
+                dc2-l3a:
+                  ansible_host: 10.255.54.156
+                dc2-l3b:
+                  ansible_host: 10.255.115.70
+                dc2-l4a:
+                  ansible_host: 10.255.78.105
+                dc2-l4b:
+                  ansible_host: 10.255.3.64
+                dc2-l5a:
+                  ansible_host: 10.255.39.251
+                dc2-l5b:
+                  ansible_host: 10.255.84.174
+              children:
+                DC2_EDGELEAFS:
+                  hosts:
+                    dc2-el1:
+                      ansible_host: 10.255.96.248
+                    dc2-el2:
+                      ansible_host: 10.255.59.191
+                    dc2-el3:
+                      ansible_host: 10.255.41.120
+            DC2_SPINES:
+              vars:
+                type: spine
+              hosts:
+                dc2-sp1:
+                  ansible_host: 10.255.53.77
+                dc2-sp2:
+                  ansible_host: 10.255.26.172
+                dc2-sp3:
+                  ansible_host: 10.255.92.249
+    COMMON_SETTINGS:
+      children:
+        WAN: null
+        DC: null
+      vars:
+        anta_name: prod
+    ACT:
+      children:
+        WAN: null
+        DC: null
+    MPLS_CORE_LINKS:
+      children:
+        WAN: null
+        DC1_EDGELEAFS: null
+        DC2_EDGELEAFS: null
+    CUSTOMER1_SERVICES:
+      children:
+        PE_ROUTERS: null
+        DC1_LEAFS: null
+        DC2_LEAFS: null
+    CUSTOMER2_SERVICES:
+      children:
+        PE_ROUTERS: null
+        DC1_LEAFS: null
+        DC2_LEAFS: null
+    CUSTOMER3_SERVICES:
+      children:
+        PE_ROUTERS: null
+        DC1_LEAFS: null
+        DC2_LEAFS: null
+    CUSTOMER_SHARED_SERVICES:
+      children:
+        PE_ROUTERS: null
+        DC1_LEAFS: null
+        DC2_LEAFS: null
+    DC_SERVERS:
+      children:
+        DC1_LEAFS: null
+        DC2_LEAFS: null
+    EDGELEAFS:
+      DC1_EDGELEAFS: null
+      DC2_EDGELEAFS: null

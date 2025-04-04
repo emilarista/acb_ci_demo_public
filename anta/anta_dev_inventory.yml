@@ -1,0 +1,146 @@
+anta_inventory:
+  hosts:
+    - host: 10.255.78.3
+      name: dc1-el1
+      tags: [ 'dc', 'edgeleaf' ]
+    - host: 10.255.42.6
+      name: dc1-el2
+      tags: [ 'dc', 'edgeleaf' ]
+    - host: 10.255.83.68
+      name: dc1-el3
+      tags: [ 'dc', 'edgeleaf' ]
+    - host: 10.255.102.245
+      name: dc1-l1a
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.111.141
+      name: dc1-l1b
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.59.112
+      name: dc1-l2a
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.13.210
+      name: dc1-l2b
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.84.224
+      name: dc1-l3a
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.75.4
+      name: dc1-l3b
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.20.91
+      name: dc1-l4a
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.81.106
+      name: dc1-l4b
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.91.70
+      name: dc1-l5a
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.79.116
+      name: dc1-l5b
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.124.222
+      name: dc1-sp1
+      tags: [ 'dc', 'spine' ]
+    - host: 10.255.42.92
+      name: dc1-sp2
+      tags: [ 'dc', 'spine' ]
+    - host: 10.255.7.162
+      name: dc1-sp3
+      tags: [ 'dc', 'spine' ]
+    - host: 10.255.115.167
+      name: dc2-el1
+      tags: [ 'dc', 'edgeleaf' ]
+    - host: 10.255.42.107
+      name: dc2-el2
+      tags: [ 'dc', 'edgeleaf' ]
+    - host: 10.255.76.17
+      name: dc2-el3
+      tags: [ 'dc', 'edgeleaf' ]
+    - host: 10.255.26.41
+      name: dc2-l1a
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.13.18
+      name: dc2-l1b
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.63.40
+      name: dc2-l2a
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.38.201
+      name: dc2-l2b
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.36.157
+      name: dc2-l3a
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.77.80
+      name: dc2-l3b
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.89.241
+      name: dc2-l4a
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.98.9
+      name: dc2-l4b
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.32.147
+      name: dc2-l5a
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.63.205
+      name: dc2-l5b
+      tags: [ 'dc', 'leaf' ]
+    - host: 10.255.58.55
+      name: dc2-sp1
+      tags: [ 'dc', 'spine' ]
+    - host: 10.255.52.213
+      name: dc2-sp2
+      tags: [ 'dc', 'spine' ]
+    - host: 10.255.104.93
+      name: dc2-sp3
+      tags: [ 'dc', 'spine' ]
+    - host: 10.255.44.4
+      name: s1-edge-pe1
+      tags: [ 'wan', 'edgepe' ]
+    - host: 10.255.30.230
+      name: s1-edge-pe2
+      tags: [ 'wan', 'edgepe' ]
+    - host: 10.255.11.113
+      name: s2-edge-pe1
+      tags: [ 'wan', 'edgepe' ]
+    - host: 10.255.24.254
+      name: s2-edge-pe2
+      tags: [ 'wan', 'edgepe' ]
+    - host: 10.255.7.142
+      name: branch1-pe1
+      tags: [ 'wan', 'branchpe' ]
+    - host: 10.255.4.245
+      name: branch2-pe1
+      tags: [ 'wan', 'branchpe' ]
+    - host: 10.255.96.181
+      name: branch3-pe1
+      tags: [ 'wan', 'branchpe' ]
+    - host: 10.255.10.78
+      name: branch3-pe2
+      tags: [ 'wan', 'branchpe' ]
+    - host: 10.255.63.69
+      name: s1-p1
+      tags: [ 'wan', 'p' ]
+    - host: 10.255.57.20
+      name: s2-p1
+      tags: [ 'wan', 'p' ]
+    - host: 10.255.1.45
+      name: s1-p3
+      tags: [ 'wan', 'p' ]
+    - host: 10.255.4.193
+      name: s1-p4
+      tags: [ 'wan', 'p' ]
+    - host: 10.255.0.129
+      name: s2-p3
+      tags: [ 'wan', 'p' ]
+    - host: 10.255.38.89
+      name: s2-p4
+      tags: [ 'wan', 'p' ]
+    - host: 10.255.5.182
+      name: s1-p2
+      tags: [ 'wan', 'rr' ]
+    - host: 10.255.56.28
+      name: s2-p2
+      tags: [ 'wan', 'rr' ]

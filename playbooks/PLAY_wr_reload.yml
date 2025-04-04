@@ -1,0 +1,19 @@
+---
+- name: Prep topology
+  hosts: COMMON_SETTINGS
+  connection: httpapi
+  gather_facts: false
+  ignore_unreachable: true
+  vars:
+    commands_list:
+      - enable
+      - write memory
+      - reload now
+
+  tasks:
+    - name: run commands on remote EOS devices
+      eos_command:
+        commands: "{{ item }}"
+      with_items: "{{ commands_list }}"
+      # failed_when: false
+      register: cli_output

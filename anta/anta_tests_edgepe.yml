@@ -1,0 +1,50 @@
+---
+anta.tests.configuration:
+  - VerifyZeroTouch:
+  - VerifyRunningConfigDiffs:
+
+# anta.tests.connectivity:
+#   - VerifyReachability:
+#       template_params:
+#         - src: Loopback0
+#           dst: 100.65.4.1 # s1-p2 RR
+#         - src: Loopback0
+#           dst: 100.65.4.2 # s2-p2 RR
+
+anta.tests.interfaces:
+  - VerifyInterfaceUtilization:
+  # - VerifyInterfaceErrors:
+  - VerifyInterfaceDiscards:
+  - VerifyInterfaceErrDisabled:
+  - VerifyInterfacesStatus: # 2 p-links and 1 internet link should be up
+      minimum: 3
+  - VerifyIllegalLACP:
+  - VerifyLoopbackCount: # lo0
+      number: 1
+  # - VerifyL3MTU:
+  #     mtu: 1500
+
+anta.tests.software:
+  - VerifyEOSVersion:
+      versions:
+        - 4.29.2F
+
+  - VerifyTerminAttrVersion:
+      versions:
+        - v1.25.0
+  - VerifyEOSExtensions:
+
+anta.tests.routing:
+  generic:
+    - VerifyRoutingProtocolModel:
+        model: multi-agent
+    - VerifyRoutingTableSize:
+        minimum: 2
+        maximum: 200
+    - VerifyBFD:
+  bgp:
+    - VerifyBGPIPv4UnicastState:
+    - VerifyBGPIPv4UnicastCount:
+        number: 1
+        template_params:
+          - vrf: INTERNET

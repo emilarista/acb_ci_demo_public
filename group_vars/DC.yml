@@ -1,0 +1,19 @@
+custom_structured_configuration_management_interfaces:
+- lldp:
+    receive: false
+    transmit: true
+    ztp_vlan: 667
+  name: Management1
+evpn_ebgp_multihop: 10
+fabric_name: DC
+isis_advertise_passive_only: true
+isis_default_circuit_type: level-2
+isis_default_is_type: level-2
+isis_default_metric: 50
+overlay_rd_type:
+  admin_subfield: overlay_loopback
+overlay_routing_protocol: ebgp
+overlay_rt_type:
+  admin_subfield: '65000'
+p2p_uplinks_mtu: 1500
+underlay_routing_protocol: isis

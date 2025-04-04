@@ -1,0 +1,168 @@
+bgp_as: 65001
+design:
+  type: mpls
+fabric_name: WAN
+isis_advertise_passive_only: true
+isis_default_circuit_type: level-2
+isis_default_is_type: level-2
+isis_default_metric: 50
+isis_ti_lfa:
+  enabled: true
+  local_convergence_delay: 15000
+  protection: link
+overlay_rd_type:
+  admin_subfield: overlay_loopback
+overlay_rt_type:
+  admin_subfield: 65001
+p:
+  defaults:
+    isis_system_id_prefix: '0000.0005'
+    loopback_ipv4_pool: 100.65.2.0/24
+    node_sid_base: 100
+    platform: vEOS-lab
+  nodes:
+    s1-p1:
+      id: 1
+      mgmt_ip: 192.168.0.43/24
+    s1-p3:
+      id: 3
+      mgmt_ip: 192.168.0.55/24
+    s1-p4:
+      id: 4
+      mgmt_ip: 192.168.0.56/24
+    s2-p1:
+      id: 2
+      mgmt_ip: 192.168.0.44/24
+    s2-p3:
+      id: 5
+      mgmt_ip: 192.168.0.57/24
+    s2-p4:
+      id: 6
+      mgmt_ip: 192.168.0.58/24
+p2p_uplinks_mtu: 1500
+pe:
+  defaults:
+    bgp_defaults:
+    - no bgp default ipv4-unicast
+    - distance bgp 20 200 200
+    - graceful-restart restart-time 300
+    - graceful-restart
+    isis_system_id_prefix: '0000.0006'
+    loopback_ipv4_pool: 100.65.3.0/24
+    mpls_route_reflectors:
+    - s1-p2
+    - s2-p2
+    node_sid_base: 200
+    overlay_address_families:
+    - vpn-ipv4
+    platform: vEOS-lab
+    spanning_tree_mode: mstp
+    spanning_tree_priority: 4096
+    spanning_tree_root_super: true
+    virtual_router_mac_address: 00:1c:73:00:dc:00
+  node_groups:
+    BRANCH1:
+      filter:
+        tags:
+        - wan_branch1
+        tenants:
+        - all
+      nodes:
+        branch1-pe1:
+          id: 5
+          mgmt_ip: 192.168.0.51/24
+    BRANCH2:
+      filter:
+        tags:
+        - wan_branch2
+        tenants:
+        - all
+      nodes:
+        branch2-pe1:
+          id: 6
+          mgmt_ip: 192.168.0.52/24
+    BRANCH3:
+      filter:
+        tags:
+        - wan_branch3
+        tenants:
+        - all
+      nodes:
+        branch3-pe1:
+          id: 7
+          mgmt_ip: 192.168.0.53/24
+        branch3-pe2:
+          id: 8
+          mgmt_ip: 192.168.0.54/24
+    S1_EDGE:
+      filter:
+        tags:
+        - wan_edge
+        tenants:
+        - all
+      nodes:
+        s1-edge-pe1:
+          id: 1
+          mgmt_ip: 192.168.0.47/24
+        s1-edge-pe2:
+          id: 2
+          mgmt_ip: 192.168.0.48/24
+    S2_EDGE:
+      filter:
+        tags:
+        - wan_edge
+        tenants:
+        - all
+      nodes:
+        s2-edge-pe1:
+          id: 3
+          mgmt_ip: 192.168.0.49/24
+        s2-edge-pe2:
+          id: 4
+          mgmt_ip: 192.168.0.50/24
+rr:
+  defaults:
+    bgp_defaults:
+    - no bgp default ipv4-unicast
+    - distance bgp 20 200 200
+    - graceful-restart restart-time 300
+    - graceful-restart
+    - bgp route-reflector preserve-attributes always
+    isis_system_id_prefix: '0000.0007'
+    loopback_ipv4_pool: 100.65.4.0/24
+    node_sid_base: 300
+    overlay_address_families:
+    - vpn-ipv4
+    platform: vEOS-lab
+  node_groups:
+    ROUTE_REFLECTORS:
+      bgp_cluster_id: 1.2.1.2
+      nodes:
+        s1-p2:
+          id: 1
+          mgmt_ip: 192.168.0.45/24
+        s2-p2:
+          id: 2
+          mgmt_ip: 192.168.0.46/24
+      structured_config:
+        router_bgp:
+          neighbors:
+          - description: dc1-el1
+            ip_address: 100.64.2.21
+            peer_group: MPLS-OVERLAY-PEERS
+          - description: dc1-el2
+            ip_address: 100.64.2.22
+            peer_group: MPLS-OVERLAY-PEERS
+          - description: dc1-el3
+            ip_address: 100.64.2.23
+            peer_group: MPLS-OVERLAY-PEERS
+          - description: dc2-el1
+            ip_address: 100.66.2.21
+            peer_group: MPLS-OVERLAY-PEERS
+          - description: dc2-el2
+            ip_address: 100.66.2.22
+            peer_group: MPLS-OVERLAY-PEERS
+          - description: dc2-el3
+            ip_address: 100.66.2.23
+            peer_group: MPLS-OVERLAY-PEERS
+underlay_routing_protocol: isis-sr

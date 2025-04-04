@@ -1,0 +1,101 @@
+# Credit to Marcus McPeek for supplying this CI file.
+name: 'CI Runner to demonstrate development AVD deployment'
+
+on:
+  pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - reopened
+      - edited
+      - synchronize
+    branches:
+      - 'main'
+    paths:
+      - 'group_vars/*'
+
+jobs:
+  run-avd-deploy-on-development:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Install Ansible
+        run: pip install ansible-core==2.14.2
+
+      - name: Install ANTA
+        run: pip install anta
+
+      - name: Downgrade cryptography
+        run: pip install cryptography==38.0.4
+
+      - name: Install Arista AVD
+        run: ansible-galaxy collection install arista.avd:==4.0.0-dev9
+
+      - name: Install AVD Requirements
+        run: sudo pip install -r ~/.ansible/collections/ansible_collections/arista/avd/requirements.txt
+
+      - name: Upgrade requests to 2.27.0 or above
+        run: pip install requests>=2.27.0 --upgrade
+
+      - name: Install OpenVPN
+        run: sudo apt install openvpn
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Build openvpn client config
+        run: 'sudo echo "$PROFILE" >> client.conf'
+        env:
+          PROFILE: ${{ secrets.OVPN_PROFILE }}
+
+      - name: VPN Setup
+        run: sudo cp client.conf /etc/openvpn/client.conf
+
+      - name: Start VPN
+        run: sudo systemctl start openvpn@client
+
+      - name: sleep
+        run: sleep 3
+
+      - name: check Liveliness and Reachability of Development CVP
+        run: ping -c 2 10.255.65.241
+
+      - name: Build and Deploy DC Configurations to ACT Dev Environment
+        run: ansible-playbook -i inventory-development.yml playbooks/PLAY_dc_deploy.yml --skip-tags=documentation
+
+      - name: Build and Deploy WAN Configurations to ACT Dev Environment
+        run: ansible-playbook -i inventory-development.yml playbooks/PLAY_wan_deploy.yml --skip-tags=documentation
+
+      - name:  Run ANTA on leafs
+        run: anta --username <redacted> --password <redacted> -i anta/anta_dev_inventory.yml --enable --ignore-status nrfu -c anta/anta_tests_leaf.yml json --tags leaf -o anta/anta-dev-leaf-result.json > /dev/null
+        continue-on-error: true
+        id: anta_leaf
+
+      - name:  Run ANTA on spines
+        run: anta --username <redacted> --password <redacted> -i anta/anta_dev_inventory.yml --enable --ignore-status nrfu -c anta/anta_tests_spine.yml json --tags spine -o anta/anta-dev-spine-result.json  > /dev/null
+        continue-on-error: true
+        id: anta_spine
+
+      - name:  Run ANTA on edge leafs
+        run: anta --username <redacted> --password <redacted> -i anta/anta_dev_inventory.yml --enable --ignore-status nrfu -c anta/anta_tests_edgeleaf.yml json --tags edgeleaf -o anta/anta-dev-edgeleaf-result.json  > /dev/null
+        continue-on-error: true
+        id: anta_edgeleaf
+
+      - name:  Run ANTA on edge pes
+        run: anta --username <redacted> --password <redacted> -i anta/anta_dev_inventory.yml --enable --ignore-status nrfu -c anta/anta_tests_edgepe.yml json --tags edgepe -o anta/anta-dev-edgepe-result.json  > /dev/null
+        continue-on-error: true
+        id: anta_edgepe
+
+      - name: Run ANTA-checker on errors
+        if: (steps.anta_leaf.outputs.result == failure() || steps.anta_spine.outputs.result == failure() || steps.anta_edgeleaf.outputs.result == failure() || steps.anta_edgepe.outputs.result == failure())
+        run: python3 scripts/anta-checker.py
+
+      # - name: Upload verification reports to github
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #     name: verification
+      #     path: reports/ # or path/to/artifact
+
+
+# Should add steps to do validate-state!
+# Possibly even add a hook to check status of some !CRITICAL! connectivity monitor in CVP.
